@@ -1,0 +1,24 @@
+{
+  "name": "Attendee list",
+  "attendees": [
+    {
+      "name": "Bruce Wayne", 
+      "email":"batman@superheores.com"
+    },{
+      "name": "Peter Parker", 
+      "email":"spidey@superheores.com"
+    },{
+      "name": "Logan", 
+      "email":"wolverine@superheores.com"
+    },{
+      "name": "Spawn", 
+      "email":"spawn@superheores.com"
+    },{
+      "name": "Bruce Banner", 
+      "email":"hulk@superheores.com"
+    },{
+      "name": "Tony Stark", 
+      "email":"ironman@superheores.com"
+    }
+  ]
+}
