@@ -29,7 +29,11 @@ module.exports = function(grunt) {
     template: {
         src: 'templates/*/*.html',
       data: 'data/*.json',
-      dest: 'out'
+      dest: 'out/html'
+    },
+    pdf: {
+      src: 'out/html/*/*.html',
+      dest: 'out/pdf'
     },
     watch: {
       files: '<config:lint.files>',
@@ -39,21 +43,20 @@ module.exports = function(grunt) {
   });
 
   // Default task.
-  grunt.registerTask('default', 'lint template');
+  grunt.registerTask('default', 'lint template pdf');
 
 
   // Create a new task.
   grunt.registerTask('template', 'Apply templates', function() {
 
-
     grunt.config.requires('template.src');
     grunt.config.requires('template.data');
 
-    var template = grunt.config('template');
+    var conf = grunt.config('template');
 
-    var tplFiles = grunt.file.expandFiles(template.src),
-        dataFiles = grunt.file.expandFiles(template.data),
-        dest = (template.dest && template.dest !== '') ? template.dest + '/' : '';
+    var tplFiles = grunt.file.expandFiles(conf.src),
+        dataFiles = grunt.file.expandFiles(conf.data),
+        dest = (conf.dest && conf.dest !== '') ? conf.dest + '/' : '';
 
     tplFiles.forEach(function(tplpath) {
 
@@ -74,6 +77,41 @@ module.exports = function(grunt) {
         grunt.file.write(destpath, content);
       });
     });
-    grunt.log.writeln('yop : ' + tplFiles + ' | ' + dataFiles);
+  });
+
+  grunt.registerTask('pdf', 'Generates PDF from html', function() {
+    grunt.config.requires('pdf.src');
+    grunt.config.requires('pdf.dest');
+
+    var conf = grunt.config('pdf');
+
+    var htmlFiles = grunt.file.expandFiles(conf.src),
+        dest = (conf.dest && conf.dest !== '') ? conf.dest + '/' : '';
+
+    grunt.log.writeln("pdf output is: " + dest + " < " + htmlFiles);
+
+    htmlFiles.forEach(function(srcpath) {
+      var destpath  = dest +
+          srcpath.replace(/.*\/([^\/]+)\/[^\/]+\.html/, '$1') +
+          '/' +
+          srcpath.replace(/.*\/([^\/]+)\.html/, '$1.pdf');
+
+      var options = {
+        cmd: 'phantomjs',
+        args: [
+            // The main script file.
+            'rasterize.js',
+            srcpath,
+            destpath,
+            'A4'
+          ]
+      };
+
+      grunt.log.writeln("Processing html '"+srcpath+"' to '"+destpath+"'");
+      grunt.log.writeln(">> [" + options.args.join(', ') + "]");
+      grunt.utils.spawn(options, function() {
+        grunt.log('done: ' + srcpath);
+      });
+    });
   });
 };
