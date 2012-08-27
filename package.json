@@ -1,0 +1,8 @@
+{
+    "name": "html-resume"
+  , "version": "0.0.1"
+  , "private": true
+  , "dependencies": {
+      "grunt-wkhtmltopdf": "0.1.0"
+  }
+}

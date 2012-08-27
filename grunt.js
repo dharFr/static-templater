@@ -31,7 +31,7 @@ module.exports = function(grunt) {
       data: 'data/*.json',
       dest: 'out/html'
     },
-    pdf: {
+    wkhtmltopdf: {
       src: 'out/html/*/*.html',
       dest: 'out/pdf'
     },
@@ -43,8 +43,10 @@ module.exports = function(grunt) {
   });
 
   // Default task.
-  grunt.registerTask('default', 'lint template pdf');
+  grunt.registerTask('default', 'lint template wkhtmltopdf');
 
+  grunt.loadNpmTasks('grunt-wkhtmltopdf');
+  //grunt.loadTasks('../grunt-wkhtmltopdf/tasks');
 
   // Create a new task.
   grunt.registerTask('template', 'Apply templates', function() {
@@ -75,42 +77,6 @@ module.exports = function(grunt) {
         grunt.log.writeln("Writing processed file to '"+destpath+"'");
 
         grunt.file.write(destpath, content);
-      });
-    });
-  });
-
-  grunt.registerTask('pdf', 'Generates PDF from html', function() {
-    grunt.config.requires('pdf.src');
-    grunt.config.requires('pdf.dest');
-
-    var conf = grunt.config('pdf');
-
-    var htmlFiles = grunt.file.expandFiles(conf.src),
-        dest = (conf.dest && conf.dest !== '') ? conf.dest + '/' : '';
-
-    grunt.log.writeln("pdf output is: " + dest + " < " + htmlFiles);
-
-    htmlFiles.forEach(function(srcpath) {
-      var destpath  = dest +
-          srcpath.replace(/.*\/([^\/]+)\/[^\/]+\.html/, '$1') +
-          '/' +
-          srcpath.replace(/.*\/([^\/]+)\.html/, '$1.pdf');
-
-      var options = {
-        cmd: 'phantomjs',
-        args: [
-            // The main script file.
-            'rasterize.js',
-            srcpath,
-            destpath,
-            'A4'
-          ]
-      };
-
-      grunt.log.writeln("Processing html '"+srcpath+"' to '"+destpath+"'");
-      grunt.log.writeln(">> [" + options.args.join(', ') + "]");
-      grunt.utils.spawn(options, function() {
-        grunt.log('done: ' + srcpath);
       });
     });
   });
