@@ -3,52 +3,36 @@ module.exports = function(grunt) {
 
   // Project configuration.
   grunt.initConfig({
-    // pkg: '<json:package.json>',
-    // meta: {
-    //   banner: '/*! <%= pkg.title || pkg.name %> - v<%= pkg.version %> - ' +
-    //     '<%= grunt.template.today("yyyy-mm-dd") %>\n' +
-    //     '<%= pkg.homepage ? "* " + pkg.homepage + "\n" : "" %>' +
-    //     '* Copyright (c) <%= grunt.template.today("yyyy") %> <%= pkg.author.name %>;' +
-    //     ' Licensed <%= _.pluck(pkg.licenses, "type").join(", ") %> */'
-    // },
+    pkg: '<json:package.json>',
+    meta: {
+      name: 'static-template-engine',
+      banner: '<!--\n' +
+              'Generated with <%= meta.name %> - v<%= pkg.version %> - <%= grunt.template.today("m/d/yyyy") %>\n' +
+              '<%= pkg.homepage %>\n' +
+              'Copyright (c) <%= grunt.template.today("yyyy") %> <%= pkg.author.name %>;' +
+              ' Licensed <%= _.pluck(pkg.licenses, "type").join(", ") %> \n' +
+              '-->'
+    },
     lint: {
       files: ['grunt.js']
     },
-    // concat: {
-    //   dist: {
-    //     src: ['<banner:meta.banner>', '<file_strip_banner:lib/<%= pkg.name %>.js>'],
-    //     dest: 'dist/<%= pkg.name %>.js'
-    //   }
-    // },
-    // min: {
-    //   dist: {
-    //     src: ['<banner:meta.banner>', '<config:concat.dist.dest>'],
-    //     dest: 'dist/<%= pkg.name %>.min.js'
-    //   }
-    // },
     template: {
-        src: 'templates/*/*.html',
-      data: 'data/*.json',
-      dest: 'out/html'
+      src: 'in/templates/*/*.html',
+      data: 'in/data/*.json',
+      dest: 'out'
     },
     wkhtmltopdf: {
-      src: 'out/html/*/*.html',
-      dest: 'out/pdf'
-    },
-    watch: {
-      files: '<config:lint.files>',
-      tasks: 'lint'
-    },
-    uglify: {}
+      src: 'out/*/*.html',
+      dest: 'out'
+    }
   });
 
   // Default task.
   grunt.registerTask('default', 'lint template wkhtmltopdf');
 
   grunt.loadNpmTasks('grunt-wkhtmltopdf');
-  //grunt.loadTasks('../grunt-wkhtmltopdf/tasks');
 
-  // Create a new task.
+  // Create templating task.
   grunt.registerTask('template', 'Apply templates', function() {
 
     grunt.config.requires('template.src');
@@ -77,6 +61,9 @@ module.exports = function(grunt) {
         grunt.log.writeln("Writing processed file to '"+destpath+"'");
 
         grunt.file.write(destpath, content);
+
+        //content = grunt.helper('concat', [destpath, '<banner>']);
+        //grunt.file.write(destpath, content);
       });
     });
   });

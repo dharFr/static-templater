@@ -1,6 +1,11 @@
 {
-    "name": "html-resume"
+    "name": "static-template-engine"
   , "version": "0.0.1"
+  , "homepage": ""
+  , "author": {
+      "name": "Olivier Audard"
+    , "email": "audard@gmail.com"
+  }
   , "private": true
   , "dependencies": {
       "grunt-wkhtmltopdf": "0.1.0"
