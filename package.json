@@ -8,6 +8,6 @@
   }
   , "private": true
   , "dependencies": {
-      "grunt-wkhtmltopdf": "0.1.0"
+      "grunt-wkhtmltopdf": "0.3.0"
   }
 }

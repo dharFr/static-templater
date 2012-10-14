@@ -1,5 +1,37 @@
-/*global module:false*/
+/*global module:false, require:false*/
+var path = require('path');
+
 module.exports = function(grunt) {
+
+  function targetSequence(folders, targetData){
+  
+    if (typeof folders === 'string') {
+      folders = grunt.file.expandDirs(folders);
+    }
+    else if (typeof folders === 'array') {
+      folders = folders.map(function(f){ return f + '/'; });
+    }
+    var obj = {};
+    for (var i = 0; i < folders.length; i++) {
+      var folder = folders[i];
+      obj[folder] = {};
+      
+      for(var key in targetData){
+          if(targetData.hasOwnProperty(key)){
+              obj[folder][key] = folder + targetData[key];
+          }
+      }
+    }
+    return obj;
+  }
+  console.log (">>>>>>>", targetSequence(
+      'projects/*',
+      {
+        src: 'templates/*/*.html',
+        data:'data/*.json',
+        dest:'out'
+      }
+    ));
 
   // Project configuration.
   grunt.initConfig({
@@ -16,33 +48,36 @@ module.exports = function(grunt) {
     lint: {
       files: ['grunt.js']
     },
-    template: {
-      src: 'in/templates/*/*.html',
-      data: 'in/data/*.json',
-      dest: 'out'
-    },
-    wkhtmltopdf: {
+
+//    wkhtmltopdf: {
+//      src: 'projects/sample/out/*/*.html',
+//      dest: 'projects/sample/out'
+//    },
+
+    template: targetSequence( 'projects/*', {
+      src: 'templates/*/*.html',
+      json:'data/*.json',
+      dest:'out'
+    }),
+
+    wkhtmltopdf: targetSequence( 'projects/*', {
       src: 'out/*/*.html',
-      dest: 'out'
-    }
+      dest:'out'
+    })
   });
 
   // Default task.
   grunt.registerTask('default', 'lint template wkhtmltopdf');
 
+  //grunt.loadTasks('../grunt-wkhtmltopdf/tasks');
   grunt.loadNpmTasks('grunt-wkhtmltopdf');
 
   // Create templating task.
-  grunt.registerTask('template', 'Apply templates', function() {
+  grunt.registerMultiTask('template', 'Apply templates', function() {
 
-    grunt.config.requires('template.src');
-    grunt.config.requires('template.data');
-
-    var conf = grunt.config('template');
-
-    var tplFiles = grunt.file.expandFiles(conf.src),
-        dataFiles = grunt.file.expandFiles(conf.data),
-        dest = (conf.dest && conf.dest !== '') ? conf.dest + '/' : '';
+    var tplFiles = grunt.file.expandFiles(this.data.src),
+        dataFiles = grunt.file.expandFiles(this.data.json),
+        dest = (this.data.dest && this.data.dest !== '') ? this.data.dest + '/' : '';
 
     tplFiles.forEach(function(tplpath) {
 
