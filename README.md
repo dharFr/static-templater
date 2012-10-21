@@ -1,6 +1,7 @@
 # Static Templater
 
 A [grunt][grunt]-based command line tool to render HMTL and PDF from JSON and HTML templates.
+Uses [Underscore.js template][underscore-template] engine, already included with Grunt.
 
 ## Setup
 
@@ -49,4 +50,5 @@ Add a grunt [init task][inittask] to create a new project.
 
 
 [grunt]: http://gruntjs.com/
+[underscore-template]: http://underscorejs.org/#template
 [inittask]: https://github.com/gruntjs/grunt/blob/master/docs/api.md#gruntregisterinittask
