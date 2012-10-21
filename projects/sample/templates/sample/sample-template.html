@@ -3,19 +3,33 @@
 <head>
   <meta charset="UTF-8">
   <title><%= name %></title>
+  <style>
+    table {
+      width: 100%;
+    }
+  </style>
 </head>
 <body>
   <h1><%= name %></h1>
   <% if (attendees) {  %>
-  <ul>
-    <% _.each(attendees, function(attendee) { %>
-    <li>
-      <a href="<%= attendee.link %>">
-        <%= attendee.name %> (<%= attendee.email %>)
-      </a>
-    </li>
-    <% }); %>
-  </ul>
+  <table>
+    <thead>
+      <tr>
+        <th>Rank</th>
+        <th>Name</th>
+        <th>Link</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% _.each(_.sortBy(attendees, function(it){ return it.rank; }), function(attendee) { %>
+      <tr>
+        <td>#<%= attendee.rank %></td>
+        <td><%= attendee.name %></td>
+        <td><a href="<%= attendee.link %>">Web site</a></td>
+      </tr>
+      <% }); %>
+    </tbody>
+  </table>
   <% } %>
 </body>
 </html>
