@@ -4,8 +4,40 @@
   <meta charset="UTF-8">
   <title><%= name %></title>
   <style>
+    body {
+      font-family: "Helvetica Neue",Helvetica,Arial;
+      font-size: 16px;
+      padding: 1em;
+      background: rgb(217,182,46);
+    }
+    h1 {
+      text-align: center;
+      font-size: 40px;
+      text-shadow: 2px 2px 1px #786C3C;
+    }
     table {
       width: 100%;
+      border: thin solid #E0D39F;
+      border-spacing: 0;
+      background: #AB8F22;
+    }
+    tr { padding: 0; }
+    tr:nth-child(even) {
+      background: #DBBE4D;
+    }
+    th, td {
+      padding: 0.2em;
+      border: 0.1em solid #E0D39F;
+    }
+    th { background: #D9B014; }
+
+    /* Use print media queries to define custom display on PDF version*/
+    @media print {
+      body { background: none; }
+      h1 {text-shadow: 1px 1px 1px #333; }
+      table { background: none; border-color: darkgrey;}
+      th, td { background: none; border-color: darkgrey;}
+      tr:nth-child(even) { background: lightgrey; }
     }
   </style>
 </head>
@@ -17,6 +49,7 @@
       <tr>
         <th>Rank</th>
         <th>Name</th>
+        <th>Alias</th>
         <th>Link</th>
       </tr>
     </thead>
@@ -25,7 +58,8 @@
       <tr>
         <td>#<%= attendee.rank %></td>
         <td><%= attendee.name %></td>
-        <td><a href="<%= attendee.link %>">Web site</a></td>
+        <td><%= attendee.alias %></td>
+        <td><a href="<%= attendee.link %>" target="_blank">Web site</a></td>
       </tr>
       <% }); %>
     </tbody>

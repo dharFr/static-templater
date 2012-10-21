@@ -4,30 +4,37 @@
     {
       "rank": 3,
       "name": "Bruce Wayne", 
+      "alias": "Batman",
       "link": "http://www.dccomics.com/characters/batman"
     },{
       "rank": 4,
       "name": "Peter Parker", 
+      "alias": "Spiderman",
       "link": "http://marvel.com/characters/bio/1009610/spider-man"
     },{
       "rank": 1,
       "name": "Logan", 
+      "alias": "Wolverine",
       "link": "http://marvel.com/characters/bio/1009718/wolverine"
     },{
       "rank": 2,
-      "name": "Spawn", 
+      "name": "Al Simmons", 
+      "alias": "Spawn",
       "link": "http://spawn.com"
     },{
       "rank": 6,
       "name": "Bruce Banner", 
+      "alias": "Hulk",
       "link": "http://marvel.com/characters/bio/1009351/hulk"
     },{
       "rank": 7,
       "name": "Clark Kent ", 
+      "alias": "Superman",
       "link": "http://www.dccomics.com/characters/superman"
     },{
       "rank": 5,
       "name": "Tony Stark", 
+      "alias": "Ironman",
       "link": "http://marvel.com/characters/bio/1009368/iron_man"
     }
   ]
