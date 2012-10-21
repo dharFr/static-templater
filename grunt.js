@@ -2,36 +2,10 @@
 var path = require('path');
 
 module.exports = function(grunt) {
+  'use strict';
 
-  function targetSequence(folders, targetData){
-  
-    if (typeof folders === 'string') {
-      folders = grunt.file.expandDirs(folders);
-    }
-    else if (typeof folders === 'array') {
-      folders = folders.map(function(f){ return f + '/'; });
-    }
-    var obj = {};
-    for (var i = 0; i < folders.length; i++) {
-      var folder = folders[i];
-      obj[folder] = {};
-      
-      for(var key in targetData){
-          if(targetData.hasOwnProperty(key)){
-              obj[folder][key] = folder + targetData[key];
-          }
-      }
-    }
-    return obj;
-  }
-  console.log (">>>>>>>", targetSequence(
-      'projects/*',
-      {
-        src: 'templates/*/*.html',
-        data:'data/*.json',
-        dest:'out'
-      }
-    ));
+  // targetSequence helper function
+  var targetSequence = require('./lib/targetSequence').init(grunt);
 
   // Project configuration.
   grunt.initConfig({
@@ -46,24 +20,43 @@ module.exports = function(grunt) {
               '-->'
     },
     lint: {
-      files: ['grunt.js']
+      files: ['lib/*', 'grunt.js']
     },
 
-//    wkhtmltopdf: {
-//      src: 'projects/sample/out/*/*.html',
-//      dest: 'projects/sample/out'
-//    },
-
     template: targetSequence( 'projects/*', {
-      src: 'templates/*/*.html',
-      json:'data/*.json',
-      dest:'out'
+      src: '%%templates/*/*.html',
+      json:'%%data/*.json',
+      dest:'%%out'
     }),
 
     wkhtmltopdf: targetSequence( 'projects/*', {
-      src: 'out/*/*.html',
-      dest:'out'
-    })
+      src: '%%out/*/*.html',
+      dest:'%%out'
+    }),
+
+    watch: targetSequence( 'projects/*', {
+      files: ['%%templates/*/*.html', '%%data/*.json'],
+      tasks:'template:%% wkhtmltopdf:%%'
+    }),
+
+    jshint: {
+      options: {
+        maxcomplexity: 4,
+        curly: true,
+        eqeqeq: true,
+        immed: true,
+        latedef: true,
+        newcap: true,
+        noarg: true,
+        sub: true,
+        undef: true,
+        boss: true,
+        eqnull: true,
+        node: true,
+        es5: true
+      },
+      globals: {}
+    }
   });
 
   // Default task.
@@ -73,33 +66,5 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-wkhtmltopdf');
 
   // Create templating task.
-  grunt.registerMultiTask('template', 'Apply templates', function() {
-
-    var tplFiles = grunt.file.expandFiles(this.data.src),
-        dataFiles = grunt.file.expandFiles(this.data.json),
-        dest = (this.data.dest && this.data.dest !== '') ? this.data.dest + '/' : '';
-
-    tplFiles.forEach(function(tplpath) {
-
-      dataFiles.forEach(function(datapath){
-
-        grunt.log.writeln("Processing template '"+tplpath+"' with data from '"+datapath+"'");
-        var tpl = grunt.file.read(tplpath);
-        var data = grunt.file.readJSON(datapath);
-
-        var content = grunt.template.process(tpl, data),
-            destpath  = dest +
-                        tplpath.replace(/.*\/([^\/]+)\/[^\/]+\.html/, '$1') +
-                        '/' +
-                        datapath.replace(/.*\/([^\/]+)\.json/, '$1.html');
-
-        grunt.log.writeln("Writing processed file to '"+destpath+"'");
-
-        grunt.file.write(destpath, content);
-
-        //content = grunt.helper('concat', [destpath, '<banner>']);
-        //grunt.file.write(destpath, content);
-      });
-    });
-  });
+  require('./lib/template').init(grunt);
 };
